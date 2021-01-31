@@ -14,9 +14,11 @@ public class UserRestControllerV1 {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id){
-        User user = userService.findById(id);
+    @GetMapping(value = "/userinfo")
+    public ResponseEntity<UserDto> getUserInfo(@RequestHeader(value = "Authorization") String bearerToken){
+        String token = bearerToken.substring(7, bearerToken.length());
+        Long myId = userService.getMyId(token);
+        User user = userService.findById(myId);
         if (user==null){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -25,4 +27,7 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
+
+
+
 }

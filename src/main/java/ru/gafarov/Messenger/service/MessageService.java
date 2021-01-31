@@ -8,5 +8,5 @@ public interface MessageService {
     public Message sendMessage(Message message);
     public List<Message> showСorrespondenceWithSomebody(Long somebodyId, Long myId);
 
-    public Message readMessage(Long id);
+    public Message readMessage(Long id, Long myId);
 }

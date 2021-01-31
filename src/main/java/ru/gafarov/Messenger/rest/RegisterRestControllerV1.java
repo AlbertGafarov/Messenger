@@ -1,13 +1,14 @@
 package ru.gafarov.Messenger.rest;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.gafarov.Messenger.dto.UserDto;
+import ru.gafarov.Messenger.exception_handling.MessageIncorrectData;
+import ru.gafarov.Messenger.exception_handling.NoSuchMessageException;
 import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.service.UserService;
 
@@ -25,5 +26,11 @@ public class RegisterRestControllerV1 {
         User registeredUser = userService.register(user);
         userDto = UserDto.fromUser(registeredUser);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
+    }
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData>handleException(ConstraintViolationException exception){
+        MessageIncorrectData data = new MessageIncorrectData();
+        data.setInfo(exception.getSQLException().getMessage());
+        return new ResponseEntity<>(data, HttpStatus.CONFLICT);
     }
 }
