@@ -1,0 +1,143 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet id="0.0.1" author="albert.gafarov">
+        <!-- схему придется содать заранее -->
+        <sqlFile path="liquibase/schema.sql" encoding="UTF-8"/>
+    </changeSet>
+
+    <changeSet id="1.0.0" author="albert.gafarov">
+        <createTable tableName="users">
+            <column name="id" type="serial" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(100)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="first_name" type="varchar(100)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="current_timestamp" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="ACTIVE" >
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.1" author="albert.gafarov">
+        <createTable tableName="roles">
+            <column name="id" type="serial" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)" >
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="current_timestamp" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="ACTIVE" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.2" author="albert.gafarov">
+        <createTable tableName="user_roles">
+            <column name="user_id" type="integer"/>
+            <column name="role_id" type="integer"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.3" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_user_roles_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.4" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="user_roles"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_user_roles_roles"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.5" author="albert.gafarov">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_USER"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="1.0.6" author="albert.gafarov">
+        <insert tableName="roles">
+            <column name="name" value="ROLE_ADMIN"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="1.0.7" author="albert.gafarov">
+        <createTable tableName="messages">
+            <column name="id" type="serial" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="sender_id" type="integer" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination_id" type="integer" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="text_message" type="text" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_date" type="timestamp" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="current_timestamp" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="current_timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="NOT_READ" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.8" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="messages"
+                                 baseColumnNames="sender_id"
+                                 constraintName="fk_messages_sender"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.9" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="messages"
+                                 baseColumnNames="destination_id"
+                                 constraintName="fk_messages_destination"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+</databaseChangeLog>
