@@ -56,14 +56,14 @@ public class MessageControllerV1 {
         return message;
     }
     @ExceptionHandler
-    public ResponseEntity<MessageIncorrectData>handleException(NoSuchMessageException exception){
+    public ResponseEntity<MessageIncorrectData> handleException(NoSuchMessageException exception){
         MessageIncorrectData data = new MessageIncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<MessageIncorrectData>handleException(Exception exception){
+    public ResponseEntity<MessageIncorrectData> handleException(Exception exception){
         MessageIncorrectData data = new MessageIncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);

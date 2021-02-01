@@ -94,4 +94,10 @@ public class UserServiceImpl implements UserService {
         log.info("IN getMyId user: {} found", me);
         return me.getId();
     }
+
+    @Override
+    public List<User> searchPeople(String partOfName) {
+        String partOfNameUpper;
+        return userRepository.searchPeople(partOfName);
+    }
 }

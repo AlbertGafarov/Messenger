@@ -11,4 +11,5 @@ public interface UserService {
     public User findById(Long id);
     public void delete(Long id);
     public Long getMyId(String token);
+    public List<User> searchPeople(String partOfName);
 }
