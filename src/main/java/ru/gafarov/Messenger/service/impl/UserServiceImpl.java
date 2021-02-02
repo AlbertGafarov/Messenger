@@ -10,6 +10,7 @@ import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.repository.RoleRepository;
 import ru.gafarov.Messenger.repository.UserRepository;
 import ru.gafarov.Messenger.security.jwt.JwtTokenProvider;
+import ru.gafarov.Messenger.service.Transcrypter;
 import ru.gafarov.Messenger.service.UserService;
 
 import java.util.ArrayList;
@@ -29,13 +30,16 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final Transcrypter transcrypter;
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder
-                            , JwtTokenProvider jwtTokenProvider) {
+            , JwtTokenProvider jwtTokenProvider, Transcrypter transcrypter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.transcrypter = transcrypter;
     }
 
 
@@ -97,7 +101,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchPeople(String partOfName) {
-        String partOfNameUpper;
-        return userRepository.searchPeople(partOfName);
+        String partOfNameLowerCyrilic = transcrypter.toCyrilic(partOfName);
+        String partOfNameLowerLatin = transcrypter.toLatin(partOfName);
+        log.info("IN toCyrilic result: {}", partOfNameLowerCyrilic);
+        log.info("IN toLatin reult: {}", partOfNameLowerLatin);
+
+        return userRepository.searchPeople(partOfName, partOfNameLowerCyrilic, partOfNameLowerLatin);
     }
 }

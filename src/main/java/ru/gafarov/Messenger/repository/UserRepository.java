@@ -7,7 +7,7 @@ import ru.gafarov.Messenger.model.User;
 import java.util.List;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    public User findByUsername(String name);
-    @Query("select u from User u where u.username like %?1%")
-    List<User> searchPeople(String partOfName);
+    User findByUsername(String name);
+    @Query(value = "select * from Users u where lower(u.username) like %?1% or lower(u.username) like %?2% or lower(u.username) like %?3%", nativeQuery = true)
+    List<User> searchPeople(String partOfName, String partOfNameLowerCyrilic, String partOfNameLowerLatin);
 }
