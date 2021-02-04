@@ -38,7 +38,7 @@ public class Transcrypter {
                     case "ju": partOfNameCyrilicLowerCase.append("ю"); i += 2; break;
                     case "ja": partOfNameCyrilicLowerCase.append("я"); i += 2; break;
                     default:
-                        if (latinList.indexOf(oneSymbol)> 0){
+                        if (latinList.indexOf(oneSymbol)>= 0){
                             partOfNameCyrilicLowerCase.append(cyrilic[latinList.indexOf(oneSymbol)]);
                         } else {
                             partOfNameCyrilicLowerCase.append(oneSymbol);
@@ -60,7 +60,7 @@ public class Transcrypter {
         while (i < partOfNameLowerCase.length()) {
             String oneSymbol = partOfNameLowerCase.substring(i, i + 1);
 
-            if (cyriilcList.indexOf(oneSymbol) > 0) {
+            if (cyriilcList.indexOf(oneSymbol) >= 0) {
                 partOfNameLatinLowerCase.append(latin[cyriilcList.indexOf(oneSymbol)]);
             } else {
                 partOfNameLatinLowerCase.append(oneSymbol);
@@ -68,5 +68,8 @@ public class Transcrypter {
             i++;
         }
         return partOfNameLatinLowerCase.toString();
+    }
+    public String trimSoftAndHardSymbol(String str){
+        return str.replace("ь","").replace("\'","").replace("ъ","");
     }
 }

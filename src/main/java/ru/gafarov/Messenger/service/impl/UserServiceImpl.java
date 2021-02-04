@@ -101,8 +101,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchPeople(String partOfName) {
-        String partOfNameLowerCyrilic = transcrypter.toCyrilic(partOfName);
-        String partOfNameLowerLatin = transcrypter.toLatin(partOfName);
+        String partOfNameLowerCyrilic = transcrypter.trimSoftAndHardSymbol(transcrypter.toCyrilic(partOfName));
+        String partOfNameLowerLatin = transcrypter.trimSoftAndHardSymbol(transcrypter.toLatin(partOfName));
         log.info("IN toCyrilic result: {}", partOfNameLowerCyrilic);
         log.info("IN toLatin reult: {}", partOfNameLowerLatin);
 
