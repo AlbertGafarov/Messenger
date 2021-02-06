@@ -140,4 +140,81 @@
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"/>
     </changeSet>
+    <changeSet id="1.0.10" author="albert.gafarov">
+        <createTable tableName="bets">
+            <column name="id" type="serial" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="message_id" type="integer" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="initiator_id" type="integer" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="opponent_id" type="integer" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="definition" type="text" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="wager" type="text" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="finish_date" type="timestamp" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="created" type="timestamp" defaultValueDate="current_timestamp" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp" defaultValueDate="current_timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="initiator_bet_status" type="varchar(25)" defaultValue="NOT_READ" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="opponent_bet_status" type="varchar(25)" defaultValue="NOT_READ" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(25)" defaultValue="NOT_READ" >
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1.0.11" author="albert.gafarov">
+        <addColumn tableName="messages" >
+            <column name="bet_id"
+                    type="integer"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="1.0.12" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="messages"
+                                 baseColumnNames="bet_id"
+                                 constraintName="fk_messages_bets"
+                                 referencedTableName="bets"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"/>
+    </changeSet>
+    <changeSet id="1.0.13" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="bets"
+                                 baseColumnNames="message_id"
+                                 constraintName="fk_bets_messages"
+                                 referencedTableName="messages"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="1.0.14" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="bets"
+                                 baseColumnNames="initiator_id"
+                                 constraintName="fk_bets_initiator"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="1.0.15" author="albert.gafarov">
+        <addForeignKeyConstraint baseTableName="bets"
+                                 baseColumnNames="opponent_id"
+                                 constraintName="fk_bets_opponent"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

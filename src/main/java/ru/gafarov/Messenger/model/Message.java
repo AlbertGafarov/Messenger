@@ -24,4 +24,8 @@ public class Message extends BaseEntity {
     @Column(name = "text_message")
     private String textMessage;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="bet_id")
+    private Bet bet;
+
 }
