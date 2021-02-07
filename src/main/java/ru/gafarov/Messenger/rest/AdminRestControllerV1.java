@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gafarov.Messenger.dto.AdminUserDto;
+import ru.gafarov.Messenger.dto.user.AdminUserDto;
 import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.service.UserService;
 

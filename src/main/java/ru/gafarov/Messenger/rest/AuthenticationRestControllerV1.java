@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.gafarov.Messenger.dto.AuthenticationRequestDto;
+import ru.gafarov.Messenger.dto.user.AuthenticationRequestDto;
 import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.security.jwt.JwtTokenProvider;
 import ru.gafarov.Messenger.service.UserService;
@@ -23,11 +23,11 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/auth/")
 public class AuthenticationRestControllerV1 {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {

@@ -1,22 +1,24 @@
 package ru.gafarov.Messenger.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "messages")
 public class Message extends BaseEntity {
 
-    @Column(name = "sender_id")
-    private Long senderId;
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
-    @Column(name = "destination_id")
-    private Long destinationId;
+    @ManyToOne
+    @JoinColumn(name = "destination_id")
+    private User destination;
 
     @Column(name = "read_date")
     private Date readDate;
@@ -24,8 +26,8 @@ public class Message extends BaseEntity {
     @Column(name = "text_message")
     private String textMessage;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="bet_id")
+    @OneToOne(mappedBy = "reasonMessage")
+    //@JoinColumn(name="bet_id")
     private Bet bet;
 
 }

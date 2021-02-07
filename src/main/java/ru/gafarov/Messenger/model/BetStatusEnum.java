@@ -1,6 +1,6 @@
 package ru.gafarov.Messenger.model;
 
-public enum BetStatus {
+public enum BetStatusEnum {
     OFFERED // Предложен
     ,CANCEL  // Спор отклонен
     ,ACCEPTED // Принят

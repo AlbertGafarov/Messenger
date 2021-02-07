@@ -7,9 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.web.filter.GenericFilterBean;
 import ru.gafarov.Messenger.security.jwt.JwtConfigurer;
-import ru.gafarov.Messenger.security.jwt.JwtTokenFilter;
 import ru.gafarov.Messenger.security.jwt.JwtTokenProvider;
 
 @Configuration

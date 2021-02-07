@@ -10,7 +10,7 @@ import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.repository.RoleRepository;
 import ru.gafarov.Messenger.repository.UserRepository;
 import ru.gafarov.Messenger.security.jwt.JwtTokenProvider;
-import ru.gafarov.Messenger.service.Transcrypter;
+import ru.gafarov.Messenger.service.Transcript;
 import ru.gafarov.Messenger.service.UserService;
 
 import java.util.ArrayList;
@@ -30,16 +30,16 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final Transcrypter transcrypter;
+    private final Transcript transcript;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder
-            , JwtTokenProvider jwtTokenProvider, Transcrypter transcrypter) {
+            , JwtTokenProvider jwtTokenProvider, Transcript transcript) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.transcrypter = transcrypter;
+        this.transcript = transcript;
     }
 
 
@@ -100,9 +100,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getMe(String token){
+        String myName = jwtTokenProvider.getUserName(token);
+        return findByUsername(myName);
+    }
+
+    @Override
     public List<User> searchPeople(String partOfName) {
-        String partOfNameLowerCyrilic = transcrypter.trimSoftAndHardSymbol(transcrypter.toCyrilic(partOfName));
-        String partOfNameLowerLatin = transcrypter.trimSoftAndHardSymbol(transcrypter.toLatin(partOfName));
+        String partOfNameLowerCyrilic = transcript.trimSoftAndHardSymbol(transcript.toCyrillic(partOfName));
+        String partOfNameLowerLatin = transcript.trimSoftAndHardSymbol(transcript.toLatin(partOfName));
         log.info("IN toCyrilic result: {}", partOfNameLowerCyrilic);
         log.info("IN toLatin reult: {}", partOfNameLowerLatin);
 

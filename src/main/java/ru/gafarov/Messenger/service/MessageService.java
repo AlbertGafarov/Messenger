@@ -1,12 +1,17 @@
 package ru.gafarov.Messenger.service;
 
 import ru.gafarov.Messenger.model.Message;
+import ru.gafarov.Messenger.model.User;
 
 import java.util.List;
 
 public interface MessageService {
-    public Message sendMessage(Message message);
-    public List<Message> showСorrespondenceWithSomebody(Long somebodyId, Long myId);
+    Message sendMessage(Message message);
+    List<Message> showCorrespondenceWithSomebody(Long somebodyId, Long myId);
 
-    public Message readMessage(Long id, Long myId);
+    Message readMessage(Long id, Long myId);
+
+    Message readMessage(Long id, User me);
+
+    User getInterlocutor(Long messageId, User initiator);
 }

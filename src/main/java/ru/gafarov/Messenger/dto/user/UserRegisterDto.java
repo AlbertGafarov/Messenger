@@ -1,4 +1,4 @@
-package ru.gafarov.Messenger.dto;
+package ru.gafarov.Messenger.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

@@ -18,5 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
                 "or replace(lower(u.last_name),'''','') like %?3% " +
                 "or replace(substring( lower(u.email) from 1 for position ('@' in email)-1),'''','') like %?3%"
             , nativeQuery = true)
-    List<User> searchPeople(String partOfName, String partOfNameLowerCyrilic, String partOfNameLowerLatin);
+    List<User> searchPeople(String partOfName, String partOfNameLowerCyrillic, String partOfNameLowerLatin);
 }
