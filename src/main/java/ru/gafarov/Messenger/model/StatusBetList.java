@@ -1,5 +1,7 @@
 package ru.gafarov.Messenger.model;
 
+import ru.gafarov.Messenger.exception_handling.BetException;
+
 import java.util.ArrayList;
 
 public class StatusBetList extends ArrayList<StatusBet> {
@@ -12,6 +14,15 @@ public class StatusBetList extends ArrayList<StatusBet> {
             }
         }
         return false;
+    }
+
+    public String getErrorMessage (StatusBet statusBet){
+        for (StatusBet s: this) {
+            if (statusBet.getCurrentBetStatus().equals(s.getCurrentBetStatus())){
+                return s.getMessage();
+            }
+        }
+        throw new BetException("Не нашелся текущий статус в бд");
     }
 
     public StatusBetList() {

@@ -100,12 +100,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getMe(String token){
-        String myName = jwtTokenProvider.getUserName(token);
-        return findByUsername(myName);
-    }
-
-    @Override
     public List<User> searchPeople(String partOfName) {
         String partOfNameLowerCyrilic = transcript.trimSoftAndHardSymbol(transcript.toCyrillic(partOfName));
         String partOfNameLowerLatin = transcript.trimSoftAndHardSymbol(transcript.toLatin(partOfName));
@@ -113,5 +107,12 @@ public class UserServiceImpl implements UserService {
         log.info("IN toLatin reult: {}", partOfNameLowerLatin);
 
         return userRepository.searchPeople(partOfName, partOfNameLowerCyrilic, partOfNameLowerLatin);
+    }
+
+    @Override
+    public User findMe(String bearerToken) {
+        String token = bearerToken.substring(7);
+        Long myId = getMyId(token);
+        return findById(myId);
     }
 }

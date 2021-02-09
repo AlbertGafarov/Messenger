@@ -225,7 +225,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="new_bet_status" type="varchar(25)">
-                <constraints nullable="false"/>
             </column>
             <column name="message" type="text">
                 <constraints nullable="true"/>
@@ -236,42 +235,61 @@
         <insert tableName="status">
             <column name="current_bet_status" value="OFFERED"/>
             <column name="new_bet_status" value="CANCEL"/>
+            <column name="message" value="Your status is OFFERED. You can change status only on CANCEL or ACCEPTED"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.18" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="OFFERED"/>
             <column name="new_bet_status" value="ACCEPTED"/>
+            <column name="message" value="Your status is OFFERED. You can change status only on CANCEL or ACCEPTED"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.19" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="ACCEPTED"/>
             <column name="new_bet_status" value="WIN"/>
+            <column name="message" value="Your status is ACCEPTED. You can change status only on WIN or LOSE or STANDOFF"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.20" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="ACCEPTED"/>
             <column name="new_bet_status" value="LOSE"/>
+            <column name="message" value="Your status is ACCEPTED. You can change status only on WIN or LOSE or STANDOFF"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.21" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="ACCEPTED"/>
             <column name="new_bet_status" value="STANDOFF"/>
+            <column name="message" value="Your status is ACCEPTED. You can change status only on WIN or LOSE or STANDOFF"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.22" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="WIN"/>
             <column name="new_bet_status" value="WAGERRECIEVED"/>
+            <column name="message" value="Your status is WIN. You can change status only on WAGERRECIEVED"/>
         </insert>
     </changeSet>
     <changeSet id="1.0.23" author="albert.gafarov">
         <insert tableName="status">
             <column name="current_bet_status" value="LOSE"/>
             <column name="new_bet_status" value="WAGERPAID"/>
+            <column name="message" value="Your status is LOSE. You can change status only on WAGERPAID"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1.0.24" author="albert.gafarov">
+        <insert tableName="status">
+            <column name="current_bet_status" value="WAGERPAID"/>
+            <column name="message" value="Your status is WAGERPAID. It is finish status"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1.0.25" author="albert.gafarov">
+        <insert tableName="status">
+            <column name="current_bet_status" value="WAGERRECIEVED"/>
+            <column name="message" value="Your status is WAGERRECIEVED. It is finish status"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

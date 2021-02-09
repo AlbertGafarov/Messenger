@@ -27,11 +27,9 @@ public class MessageControllerV1 {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/")
-    /* Отправить сообщение **/
+    @PostMapping("")
     public MessageDto sendMessage(@RequestBody SendMessageDto sendMessageDto, @RequestHeader(value = "Authorization") String bearerToken){
-        String token = bearerToken.substring(7);
-        User me = userService.getMe(token);
+        User me = userService.findMe(bearerToken);
         User destination = userService.findById(sendMessageDto.getDestinationId());
         Message message = new Message();
         message.setSender(me);
@@ -74,12 +72,12 @@ public class MessageControllerV1 {
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
-    /*@ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<MessageIncorrectData> handleException(Exception exception){
         MessageIncorrectData data = new MessageIncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
-    }*/
+    }
 
     @ExceptionHandler
     public ResponseEntity<MessageIncorrectData>handleException(JwtAuthentificationException exception){

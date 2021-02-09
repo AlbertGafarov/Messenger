@@ -15,11 +15,11 @@ public class CreateBetDto {
     private String wager;
     private Date finishDate;
 
-    public Bet toBet() {
+    /*public Bet toBet() {
         Bet bet = new Bet();
         bet.setDefinition(definition);
         bet.setWager(wager);
         bet.setFinishDate(finishDate);
         return bet;
-    }
+    }*/
 }

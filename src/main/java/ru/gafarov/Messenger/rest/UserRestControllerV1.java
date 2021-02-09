@@ -21,46 +21,43 @@ public class UserRestControllerV1 {
     private UserService userService;
 
     @GetMapping(value = "/userinfo")
-    public ResponseEntity<UserDto> getUserInfo(@RequestHeader(value = "Authorization") String bearerToken){
-        String token = bearerToken.substring(7);
-        Long myId = userService.getMyId(token);
-        User user = userService.findById(myId);
-        if (user==null){
+    public ResponseEntity<UserDto> getUserInfo(@RequestHeader(value = "Authorization") String bearerToken) {
+        User user = userService.findMe(bearerToken);
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         UserDto result = UserDto.fromUser(user);
-
         return new ResponseEntity<>(result, HttpStatus.OK);
-
     }
 
     @PutMapping("/change_info")
     public ResponseEntity<UserDto> update(@RequestBody UserRegisterDto userRegisterDto, @RequestHeader(value = "Authorization") String bearerToken){
-        String token = bearerToken.substring(7);
-        Long id = userService.getMyId(token);
+        Long id = userService.getMyId(bearerToken.substring(7));
         User user = userRegisterDto.toUser();
         user.setId(id);
         User registeredUser = userService.register(user);
-        UserDto userDto = UserDto.fromUser(registeredUser);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+        return new ResponseEntity<>(UserDto.fromUser(registeredUser), HttpStatus.OK);
     }
 
     @GetMapping("/search_people/{partOfName}")
-    public ResponseEntity<List<UserDto>> searchPeople(@PathVariable String partOfName, @RequestHeader(value = "Authorization") String bearerToken){
-        if (partOfName.length()<3){
+    public ResponseEntity<List<UserDto>> searchPeople(@PathVariable String partOfName, @RequestHeader(value = "Authorization") String bearerToken) {
+        if (partOfName.length() < 3) {
             throw new NoSuchPeopleException("You entered part of name too short. Please enter more than 2 symbols");
         }
-        if (partOfName.length()>15){
+        if (partOfName.length() > 15) {
             throw new NoSuchPeopleException("Yoy entered part of too long. Please enter less than 15 symbols");
         }
+        User me = userService.findMe(bearerToken);
         List<User> listOfPeople = userService.searchPeople(partOfName);
         List<UserDto> listOfPeopleDto = new ArrayList<>();
-        if (listOfPeople.isEmpty()){
+        if (listOfPeople.isEmpty()) {
             throw new NoSuchPeopleException("There is no people like: " + partOfName);
         }
-        for (User user:listOfPeople) {
-            UserDto userDto = UserDto.fromUser(user);
-             listOfPeopleDto.add(userDto);
+        for (User user : listOfPeople) {
+            if (!user.equals(me)) {
+                UserDto userDto = UserDto.fromUser(user);
+                listOfPeopleDto.add(userDto);
+            }
         }
         return new ResponseEntity<>(listOfPeopleDto, HttpStatus.OK);
     }

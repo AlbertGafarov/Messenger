@@ -1,4 +1,4 @@
-package ru.gafarov.Messenger.dto;
+package ru.gafarov.Messenger.dto.bet;
 
 import lombok.Data;
 import ru.gafarov.Messenger.model.BetStatusEnum;

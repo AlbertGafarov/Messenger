@@ -2,7 +2,8 @@ package ru.gafarov.Messenger.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.gafarov.Messenger.dto.ChangeStatusBetDto;
+import ru.gafarov.Messenger.converter.toBetConverter;
+import ru.gafarov.Messenger.dto.bet.ChangeStatusBetDto;
 import ru.gafarov.Messenger.dto.bet.CreateBetDto;
 import ru.gafarov.Messenger.exception_handling.BetException;
 import ru.gafarov.Messenger.model.*;
@@ -12,7 +13,6 @@ import ru.gafarov.Messenger.service.BetService;
 import ru.gafarov.Messenger.service.MessageService;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,6 +30,8 @@ public class BetServiceImpl implements BetService {
     @Autowired
     private StatusBetList statusBetList;
 
+    @Autowired
+    private toBetConverter toBetConverter;
 
     @Override
     public void save(Bet bet) {
@@ -44,7 +46,7 @@ public class BetServiceImpl implements BetService {
         if (message.getBet() != null) {
             throw new BetException("This message has one bet yet with id: " + message.getBet().getId());
         }
-        Bet bet = createBetDto.toBet();
+        Bet bet = toBetConverter.toBet(createBetDto);
         bet.setCreated(new Date());
         bet.setInitiator(initiator);
         bet.setReasonMessage(message);
@@ -84,32 +86,43 @@ public class BetServiceImpl implements BetService {
             if (initiator.equals(me)) {
                 StatusBet statusBet = new StatusBet(initiatorBetStatus, newBetStatus);
                 if (statusBetList.contains(statusBet)) {
+                    if (statusBet.getNewBetStatus().equals(BetStatusEnum.CANCEL)){
+                        bet.setOpponentBetStatus(BetStatusEnum.CANCEL);
+                        bet.setStatus(Status.NOT_ACTIVE);
+                    }
+                    if (statusBet.getCurrentBetStatus().equals(BetStatusEnum.OFFERED) && !statusBet.getNewBetStatus().equals(BetStatusEnum.CANCEL) ){
+                        throw new BetException("Your status OFFERED and you initiator. You can only cancel the bet");
+                    }
                     bet.setInitiatorBetStatus(newBetStatus);
                     bet.setUpdated(new Date());
                     betRepository.save(bet);
                     return bet;
                 } else {
-                    throw new BetException("can not set status " +  newBetStatus);
+                    throw new BetException(statusBetList.getErrorMessage(statusBet));
                 }
-
-  /*              if (initiatorBetStatus.equals(BetStatusEnum.CANCEL) || opponentBetStatus.equals(BetStatusEnum.CANCEL)){
-                    throw new BetException("This bet was canceled. Nobody can change the status of the bet");
-                } else if (initiatorBetStatus.equals(BetStatusEnum.WAGERPAID) || initiatorBetStatus.equals(BetStatusEnum.WAGERRECIEVED)){
-                    throw new BetException("This bet was closed from your side. "+ initiatorBetStatus +" is finish status");
-                } else if (initiatorBetStatus.equals(BetStatusEnum.LOSE) && !newBetStatus.equals(BetStatusEnum.WAGERPAID)){
-                    throw new BetException("You lost. You can't change the status of the bet on " + newBetStatus);
-                } else if (!initiatorBetStatus.equals(BetStatusEnum.OFFERED) && newBetStatus.equals(BetStatusEnum.CANCEL)){
-                    throw new BetException("Your the status of bet is " + initiatorBetStatus + ". You can't cancelled the bet. You can cancelled the bet only from OFFERED status");
-                } */
             } else if (opponent.equals(me)){
                 StatusBet statusBet = new StatusBet(opponentBetStatus, newBetStatus);
                 if (statusBetList.contains(statusBet)){
+                    if (statusBet.getNewBetStatus().equals(BetStatusEnum.CANCEL)){
+                        bet.setInitiatorBetStatus(BetStatusEnum.CANCEL);
+                        bet.setStatus(Status.NOT_ACTIVE);
+                    }
+                    if (statusBet.getNewBetStatus().equals(BetStatusEnum.ACCEPTED)){
+                        if (new Date().after(bet.getFinishDate())){
+                            bet.setInitiatorBetStatus(BetStatusEnum.CANCEL);
+                            bet.setOpponentBetStatus(BetStatusEnum.CANCEL);
+                            bet.setStatus(Status.NOT_ACTIVE);
+                            throw new BetException("Time is up. The bet will change status on CANCEL");
+                        }
+                        bet.setInitiatorBetStatus(BetStatusEnum.ACCEPTED);
+                        bet.setStatus(Status.ACTIVE);
+                    }
                     bet.setOpponentBetStatus(newBetStatus);
                     bet.setUpdated(new Date());
                     betRepository.save(bet);
                     return bet;
                 } else {
-                    throw new BetException("can not set status " +  newBetStatus);
+                    throw new BetException(statusBetList.getErrorMessage(statusBet));
                 }
             } else {throw new BetException("You don't have bet with id: " + id);}
         } else {

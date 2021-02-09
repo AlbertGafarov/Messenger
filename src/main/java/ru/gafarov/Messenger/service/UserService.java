@@ -11,6 +11,7 @@ public interface UserService {
     User findById(Long id);
     void delete(Long id);
     Long getMyId(String token);
-    User getMe(String token);
+
     List<User> searchPeople(String partOfName);
+    User findMe(String bearerToken);
 }

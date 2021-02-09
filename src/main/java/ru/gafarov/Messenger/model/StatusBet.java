@@ -3,6 +3,7 @@ package ru.gafarov.Messenger.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -31,5 +32,18 @@ public class StatusBet {
     }
 
     public StatusBet() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StatusBet statusBet = (StatusBet) o;
+        return currentBetStatus == statusBet.currentBetStatus && newBetStatus == statusBet.newBetStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentBetStatus, newBetStatus);
     }
 }

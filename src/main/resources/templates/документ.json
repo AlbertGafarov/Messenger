@@ -1,0 +1,16 @@
+[
+	{
+		"id": 1,
+		"username": "albert",
+		"firstName": "Альберт",
+		"lastName": "Гафаров",
+		"email": "ag3d@mail.ru"
+	},
+	{
+		"id": 2,
+		"username": "elena",
+		"firstName": "Елена",
+		"lastName": "Гафарова",
+		"email": "elena.gafarova1@gmail.com"
+	}
+]
