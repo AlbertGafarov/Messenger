@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MessageDto {
+public class MessageDto implements Comparable<MessageDto> {
 
     private Long id;
     private ShortUserDto sender;
@@ -37,5 +37,8 @@ public class MessageDto {
         return messageDto;
     }
 
-
+    @Override
+    public int compareTo(MessageDto anotherMessage) {
+        return this.id.compareTo(anotherMessage.id);
+    }
 }

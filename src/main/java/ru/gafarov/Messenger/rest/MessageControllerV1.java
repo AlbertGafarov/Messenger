@@ -14,8 +14,8 @@ import ru.gafarov.Messenger.security.jwt.JwtAuthentificationException;
 import ru.gafarov.Messenger.service.MessageService;
 import ru.gafarov.Messenger.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/messages")
@@ -41,18 +41,18 @@ public class MessageControllerV1 {
     }
 
     @GetMapping("/with/{somebodyId}")
-    public List<MessageDto> showCorrespondenceWithSomebody(@PathVariable Long somebodyId
+    public ResponseEntity<List<MessageDto>> showCorrespondenceWithSomebody(@PathVariable Long somebodyId
             , @RequestHeader(value = "Authorization") String bearerToken){
         String token = bearerToken.substring(7);
         Long id = userService.getMyId(token);
         List<Message> correspondence = messageService.showCorrespondenceWithSomebody(id,somebodyId);
-        List<MessageDto> correspondenceDto = new ArrayList<>();
 
-        for (Message message: correspondence) {
+        List<MessageDto> correspondenceDto = correspondence.stream()
+                .map(MessageDto::fromMessage)
+                .sorted()
+                .collect(Collectors.toList());
 
-            correspondenceDto.add(MessageDto.fromMessage(message));
-        }
-        return correspondenceDto;
+        return new ResponseEntity<>(correspondenceDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

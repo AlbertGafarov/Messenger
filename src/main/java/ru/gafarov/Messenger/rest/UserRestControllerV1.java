@@ -11,8 +11,8 @@ import ru.gafarov.Messenger.exception_handling.NoSuchPeopleException;
 import ru.gafarov.Messenger.model.User;
 import ru.gafarov.Messenger.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -49,16 +49,16 @@ public class UserRestControllerV1 {
         }
         User me = userService.findMe(bearerToken);
         List<User> listOfPeople = userService.searchPeople(partOfName);
-        List<UserDto> listOfPeopleDto = new ArrayList<>();
+
         if (listOfPeople.isEmpty()) {
             throw new NoSuchPeopleException("There is no people like: " + partOfName);
         }
-        for (User user : listOfPeople) {
-            if (!user.equals(me)) {
-                UserDto userDto = UserDto.fromUser(user);
-                listOfPeopleDto.add(userDto);
-            }
-        }
+
+        List<UserDto> listOfPeopleDto = listOfPeople.stream().map(u -> UserDto.fromUser(u))
+                .sorted(new UserDto.UserDtoComparator())
+                .collect(Collectors.toList());
+        listOfPeopleDto.removeIf(userDto -> userDto.equals(UserDto.fromUser(me)));
+
         return new ResponseEntity<>(listOfPeopleDto, HttpStatus.OK);
     }
 

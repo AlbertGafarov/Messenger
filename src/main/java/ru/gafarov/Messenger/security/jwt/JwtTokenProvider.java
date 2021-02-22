@@ -37,8 +37,7 @@ public class JwtTokenProvider {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder;
+        return new BCryptPasswordEncoder();
     }
 
     @PostConstruct
@@ -70,14 +69,13 @@ public class JwtTokenProvider {
     }
 
     public String getUserName(String token){
-        String usernameOk = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-        return usernameOk;
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest req){
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer_")){
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }
@@ -87,10 +85,7 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
-            if (claims.getBody().getExpiration().before(new Date())){
-                return false;
-            }
-            return  true;
+            return !claims.getBody().getExpiration().before(new Date());
 
         } catch (JwtException | IllegalArgumentException e){
             throw new JwtAuthentificationException("JWT token is expired or invalid");
@@ -100,9 +95,8 @@ public class JwtTokenProvider {
 
     private List<String> getRolesNames (List<Role> userRoles){
         List<String> result = new ArrayList<>();
-        userRoles.forEach(role -> {
-            result.add(role.getName());
-        });
+        userRoles.forEach(role -> result.add(role.getName())
+        );
 
         return result;
     }

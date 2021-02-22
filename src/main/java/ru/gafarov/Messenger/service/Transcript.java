@@ -70,6 +70,6 @@ public class Transcript {
         return partOfNameLatinLowerCase.toString();
     }
     public String trimSoftAndHardSymbol(String str){
-        return str.replace("ь","").replace("'","").replace("ъ","");
+        return str.replaceAll("[ьъ']","");
     }
 }
