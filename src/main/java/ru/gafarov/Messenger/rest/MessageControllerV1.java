@@ -28,16 +28,10 @@ public class MessageControllerV1 {
     private UserService userService;
 
     @PostMapping("")
-    public MessageDto sendMessage(@RequestBody SendMessageDto sendMessageDto, @RequestHeader(value = "Authorization") String bearerToken){
+    public ResponseEntity<MessageDto> sendMessage(@RequestBody SendMessageDto sendMessageDto, @RequestHeader(value = "Authorization") String bearerToken){
         User me = userService.findMe(bearerToken);
-        User destination = userService.findById(sendMessageDto.getDestinationId());
-        Message message = new Message();
-        message.setSender(me);
-        message.setDestination(destination);
-        message.setTextMessage(sendMessageDto.getTextMessage());
-        messageService.sendMessage(message);
-
-        return MessageDto.fromMessage(message);
+        Message message = messageService.sendMessage(sendMessageDto,me);
+        return new ResponseEntity<>(MessageDto.fromMessage(message), HttpStatus.CREATED);
     }
 
     @GetMapping("/with/{somebodyId}")

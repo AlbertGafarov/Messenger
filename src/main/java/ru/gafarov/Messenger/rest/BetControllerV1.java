@@ -16,6 +16,8 @@ import ru.gafarov.Messenger.service.BetService;
 import ru.gafarov.Messenger.service.MessageService;
 import ru.gafarov.Messenger.service.UserService;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/api/v1/bets")
 public class BetControllerV1 {
@@ -31,6 +33,9 @@ public class BetControllerV1 {
 
     @PostMapping("")
     public ResponseEntity<ShowBetDto> offerBet(@RequestBody CreateBetDto createBetDto, @RequestHeader("Authorization") String bearerToken){
+        if(createBetDto.getFinishDate().before(new Date())){
+            throw new BetException("Finish date must be after current date");
+        }
         User me = userService.findMe(bearerToken);
         Bet bet = betService.save(createBetDto,me);
         ShowBetDto showBetDto = ShowBetDto.fromBet(bet);

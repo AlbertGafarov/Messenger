@@ -2,7 +2,7 @@ package ru.gafarov.Messenger.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.gafarov.Messenger.converter.toBetConverter;
+import ru.gafarov.Messenger.converter.ToBetConverter;
 import ru.gafarov.Messenger.dto.bet.ChangeStatusBetDto;
 import ru.gafarov.Messenger.dto.bet.CreateBetDto;
 import ru.gafarov.Messenger.exception_handling.BetException;
@@ -13,6 +13,7 @@ import ru.gafarov.Messenger.service.BetService;
 import ru.gafarov.Messenger.service.MessageService;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,10 +29,10 @@ public class BetServiceImpl implements BetService {
     private MessageService messageService;
 
     @Autowired
-    private StatusBetList statusBetList;
+    private List<StatusBet> statusBetList;
 
     @Autowired
-    private toBetConverter toBetConverter;
+    private ToBetConverter toBetConverter;
 
     @Override
     public void save(Bet bet) {
@@ -81,25 +82,36 @@ public class BetServiceImpl implements BetService {
             Bet bet = optionalBet.get();
             User initiator = bet.getInitiator();
             User opponent = bet.getOpponent();
+
             BetStatusEnum initiatorBetStatus = bet.getInitiatorBetStatus();
             BetStatusEnum opponentBetStatus = bet.getOpponentBetStatus();
+
             if (initiator.equals(me)) {
                 StatusBet statusBet = new StatusBet(initiatorBetStatus, newBetStatus);
+                if (initiatorBetStatus.equals(BetStatusEnum.OFFERED)){
+                    throw new BetException("You initiator and status OFFERED. You can only cancel the bet");
+                }
                 if (statusBetList.contains(statusBet)) {
                     if (statusBet.getNewBetStatus().equals(BetStatusEnum.CANCEL)){
                         bet.setOpponentBetStatus(BetStatusEnum.CANCEL);
                         bet.setStatus(Status.NOT_ACTIVE);
                     }
-                    if (statusBet.getCurrentBetStatus().equals(BetStatusEnum.OFFERED) && !statusBet.getNewBetStatus().equals(BetStatusEnum.CANCEL) ){
-                        throw new BetException("Your status OFFERED and you initiator. You can only cancel the bet");
-                    }
                     bet.setInitiatorBetStatus(newBetStatus);
                     bet.setUpdated(new Date());
                     betRepository.save(bet);
                     return bet;
+
                 } else {
-                    throw new BetException(statusBetList.getErrorMessage(statusBet));
+                    final String[] message = new String[1];
+                    statusBetList.forEach(sB -> {
+                        if (sB.getCurrentBetStatus().equals(statusBet.getCurrentBetStatus())){
+                            message[0] = sB.getMessage();
+                        }
+                    } );
+
+                    throw new BetException(message[0]);
                 }
+
             } else if (opponent.equals(me)){
                 StatusBet statusBet = new StatusBet(opponentBetStatus, newBetStatus);
                 if (statusBetList.contains(statusBet)){
@@ -122,7 +134,7 @@ public class BetServiceImpl implements BetService {
                     betRepository.save(bet);
                     return bet;
                 } else {
-                    throw new BetException(statusBetList.getErrorMessage(statusBet));
+                    throw new BetException(statusBet.getMessage());
                 }
             } else {throw new BetException("You don't have bet with id: " + id);}
         } else {

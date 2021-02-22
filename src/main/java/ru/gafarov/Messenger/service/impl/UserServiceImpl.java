@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.gafarov.Messenger.exception_handling.NoSuchPeopleException;
 import ru.gafarov.Messenger.model.Role;
 import ru.gafarov.Messenger.model.Status;
 import ru.gafarov.Messenger.model.User;
@@ -78,9 +79,9 @@ public class UserServiceImpl implements UserService {
         User result = userRepository.findById(id).orElse(null);
         if (result == null){
             log.warn("IN findById - no user found by id: {}", id);
-            return null;
+            throw new NoSuchPeopleException("There is no user with id "+ id);
         }
-        log.info("IN findById - user: {} found by id: {}", result.getEmail(), id);
+        log.info("IN findById - user: {} found by id: {}", result.getUsername(), id);
         return result;
     }
 

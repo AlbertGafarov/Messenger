@@ -7,7 +7,7 @@ import ru.gafarov.Messenger.model.Bet;
 import java.util.Date;
 
 @Service
-public class toBetConverter {
+public class ToBetConverter {
 
         public Bet toBet(CreateBetDto createBetDto) {
             if (createBetDto.getFinishDate().before(new Date())){

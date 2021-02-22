@@ -2,6 +2,8 @@ package ru.gafarov.Messenger.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.gafarov.Messenger.converter.ToMessageConverter;
+import ru.gafarov.Messenger.dto.message.SendMessageDto;
 import ru.gafarov.Messenger.model.Message;
 import ru.gafarov.Messenger.model.Status;
 import ru.gafarov.Messenger.model.User;
@@ -21,14 +23,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private UserService userService;
-
-    @Override
-    public Message sendMessage(Message message) {
-        message.setCreated(new Date());
-        message.setStatus(Status.NOT_READ);
-        messageRepository.save(message);
-        return message;
-    }
 
     @Override
     public List<Message> showCorrespondenceWithSomebody(Long somebodyId, Long myId) {
@@ -86,5 +80,17 @@ public class MessageServiceImpl implements MessageService {
             }
         }
         return null;
+    }
+
+    @Override
+    public Message sendMessage(SendMessageDto sendMessageDto, User me) {
+        Message message = ToMessageConverter.toMessage(sendMessageDto);
+        message.setSender(me);
+        message.setDestination(userService.findById(sendMessageDto.getDestinationId()));
+        message.setCreated(new Date());
+        message.setStatus(Status.NOT_READ);
+        messageRepository.save(message);
+        return message;
+
     }
 }

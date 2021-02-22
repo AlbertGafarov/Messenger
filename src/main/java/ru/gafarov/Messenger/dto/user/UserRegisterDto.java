@@ -18,11 +18,11 @@ public class UserRegisterDto {
     public User toUser(){
         User user = new User();
         user.setId(id);
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setEmail(email);
-        user.setPassword(password);
+        user.setUsername(username.trim());
+        user.setFirstName(firstName.trim());
+        user.setLastName(lastName.trim());
+        user.setEmail(email.trim());
+        user.setPassword(password.trim());
         return user;
     }
 }
